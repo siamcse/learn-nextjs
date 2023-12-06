@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight } from "@phosphor-icons/react";
 
-const Modal = ({ showModal, setShowModal }) => {
+const Modal = ({ showModal, setShowModal }:any) => {
     return (
         showModal ?
             <div className='md:w-[450px] m-4 p-6 border bg-[#ffffff] shadow-md fixed z-10 overflow-y-auto top-0 right-0'>

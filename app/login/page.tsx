@@ -1,12 +1,16 @@
 'use client'
 import React, { useState } from 'react';
 import Image from 'next/image'
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { SpinnerGap } from "@phosphor-icons/react";
 import toast, { Toaster } from 'react-hot-toast';
 import Modal from '@/components/Modal';
 import { useMutation } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
+
+type ErrorResponse = {
+    response: any
+}
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -27,14 +31,14 @@ const LoginPage = () => {
         },
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: any) => {
         e.preventDefault();
         const email = e.target.email.value;
         const password = e.target.password.value;
         console.log(email, password);
         setLoading(true);
 
-        const authInfo = {
+        const authInfo: any = {
             grantType: "password",
             email: email,
             password: password,
@@ -44,15 +48,18 @@ const LoginPage = () => {
         mutate(authInfo, {
             onSuccess: (data) => {
                 console.log(data.data.auth.accessToken);
-                Cookies.set('token',data.data.auth.accessToken);
+                Cookies.set('token', data.data.auth.accessToken);
                 setLoading(false)
             },
-            onError: (e) => {
-                toast.error(e.response.data.message);
-                setLoading(false);
+            onError: (err: unknown) => {
+                if (err instanceof AxiosError) {
+                    toast.error(err.response?.data.message);
+
+                }
             }
         })
     }
+    
     const token = Cookies.get('token');
     console.log(token);
     const handleForgotPassword = () => {
