@@ -61,7 +61,7 @@ const CompanyPage = () => {
     ]
     const sessionFeeInfo = [
         { name: 'Total Session Fee Rate', value: isFetching ? '-' : data?.companyFee.sessionFeeRate ?? '-' },
-        { name: 'Total Session Fee Rate', value: isFetching ? '-' : data?.companyFee.minimumSessionFee ?? '-' }
+        { name: 'Minimum Session Fee', value: isFetching ? '-' : data?.companyFee.minimumSessionFee ?? '-' }
     ]
     return (
         <div className='container mx-auto mb-10 p-2'>
