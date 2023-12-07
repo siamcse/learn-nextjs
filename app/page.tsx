@@ -8,6 +8,15 @@ export default function Home() {
       <h1 className='text-2xl text-center'>Please go to...</h1>
       <Link className='mt-12 text-blue-600 underline' href='/login'><Button intent={'secondary'}>Login Page</Button></Link><br />
       <Link className='mt-2 text-blue-600 underline' href='/company'><Button size={'small'}>Company Page</Button></Link>
+      <Link
+        className='mt-2 text-blue-600 underline'
+        href={{
+          pathname:'/allcompany',
+          query: { page: 1,size:10 },
+        }}
+      >
+        <Button size={'small'}>All Company</Button>
+      </Link>
     </main>
   )
 }
