@@ -12,7 +12,7 @@ export default function Home() {
         className='mt-2 text-blue-600 underline'
         href={{
           pathname:'/allcompany',
-          query: { page: 1,size:10 },
+          query: { page: 1,size:10,query:'' },
         }}
       >
         <Button size={'small'}>All Company</Button>

@@ -6,22 +6,22 @@ import axios from 'axios';
 import { SpinnerGap, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Button } from '@/components/button';
 
 const AllCompanyPage = () => {
     const searchParams = useSearchParams();
     const getPage = searchParams.get('page');
     const getSize = searchParams.get('size');
+    const getQuery = searchParams.get('query');
     const router = useRouter();
 
     const [page, setPage] = useState(Number(getPage));
+    const [searchValue, setSearchValue] = useState('');
     const token = Cookies.get('token');
-    console.log(getPage, getSize);
 
     const { data, error, isFetching, isPlaceholderData } = useQuery({
-        queryKey: ["company", page, getPage, getSize],
+        queryKey: ["company", page, getPage, getSize, searchValue],
         queryFn: async () => {
-            const res = await axios.get(`http://192.168.0.186:3004/company?page=${page}&size=${getSize}&query=`, {
+            const res = await axios.get(`http://192.168.0.186:3004/company?page=${page}&size=${getSize}&query=${searchValue}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -29,17 +29,24 @@ const AllCompanyPage = () => {
             return res.data;
         }
     })
-
+    console.log(data);
     useEffect(() => {
-        console.log(Math.ceil(data?.count / Number(getSize)));
         if (Math.ceil(data?.count / Number(getSize)) < page || page < 1) {
             setPage(1);
-            router.push('/allcompany?page=1&size=10');
+            router.push(`/allcompany?page=1&size=10&query=${searchValue}`);
         }
-    }, [page, getSize, data?.count])
+            
+        
+    }, [page, getSize, data?.count, searchValue])
 
-    console.log(data);
-
+    const handleSearch = (e) => {
+        e.preventDefault();
+        const value = e.target.search.value;
+        console.log(value);
+        setSearchValue(value ?? '');
+        router.push(`/allcompany?page=${page}&size=${getSize}&query=${value}`);
+    }
+    
     if (isFetching) {
         return <div className='min-h-screen flex justify-center items-center'>
             <SpinnerGap className='inline-block animate-spin rounded-full  motion-reduce:animate-[spin_1.5s_linear_infinite]' size={50} color="black" />
@@ -48,10 +55,10 @@ const AllCompanyPage = () => {
     return (
         <div className='container mx-auto mt-3'>
             <h1 className='text-center font-bold text-3xl '>All Company</h1>
-            <div className='flex justify-center mt-4'>
-                <input type="text" placeholder='Search' />
-                <Button className='rounded-lg'>Search</Button>
-            </div>
+            <form onSubmit={handleSearch} className='py-3 px-3 flex bg-white rounded shadow shadow-gray'>
+                <input defaultValue={getQuery} name='search' type="text" className='px-3 py-1 outline-none w-full' placeholder='Search' />
+                <button type='submit' className='bg-orange-700 text-white px-3 rounded'>Search</button>
+            </form>
             <table className="w-full border rounded-lg mt-10">
                 <thead>
                     <tr>
