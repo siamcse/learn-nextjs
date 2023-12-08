@@ -6,6 +6,8 @@ import axios from 'axios';
 import { SpinnerGap, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import ButtonCN from '@/components/ButtonCN';
+import {PencilSimple} from '@phosphor-icons/react'
 
 const AllCompanyPage = () => {
     const searchParams = useSearchParams();
@@ -52,12 +54,16 @@ const AllCompanyPage = () => {
             <SpinnerGap className='inline-block animate-spin rounded-full  motion-reduce:animate-[spin_1.5s_linear_infinite]' size={50} color="black" />
         </div>
     }
+
+    const handleEdit = (id)=>{
+        router.push(`/editcompany/${id}`);
+    }
     return (
         <div className='container mx-auto mt-3'>
             <h1 className='text-center font-bold text-3xl '>All Company</h1>
             <form onSubmit={handleSearch} className='py-3 px-3 flex bg-white rounded shadow shadow-gray'>
                 <input defaultValue={getQuery} name='search' type="text" className='px-3 py-1 outline-none w-full' placeholder='Search' />
-                <button type='submit' className='bg-orange-700 text-white px-3 rounded'>Search</button>
+                <ButtonCN type='submit' className='bg-teal-700'>Search</ButtonCN>
             </form>
             <table className="w-full border rounded-lg mt-10">
                 <thead>
@@ -65,6 +71,7 @@ const AllCompanyPage = () => {
                         <th className='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider'>Company Name</th>
                         <th className='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider'>Email</th>
                         <th className='px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider'>Phone</th>
+                        <th className='px-5 py-3 border-b-2 border-gray-200 bg-gray-100'></th>
                         <th className='px-5 py-3 border-b-2 border-gray-200 bg-gray-100'></th>
                     </tr>
                 </thead>
@@ -74,6 +81,7 @@ const AllCompanyPage = () => {
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>{company.name}</td>
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>{company.email}</td>
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>{company.phone}</td>
+                            <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'><ButtonCN onClick={()=>handleEdit(company._id)} className='bg-teal-700'><PencilSimple size={20} /></ButtonCN></td>
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>Details</td>
                         </tr>)
                     }
