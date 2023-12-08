@@ -16,19 +16,24 @@ const PricingPage = () => {
                         data.locations.map(location => <div key={location._id} className='grid grid-cols-2 pl-5 md:pl-10 p-3  border-b border-gray-200'>
                             <div className=''>
                                 <p className='font-semibold opacity-50'>Location</p>
-                                <h3 className='font-medium uppercase'>{location.name}</h3>
+                                <h3 className='mt-1 font-medium text-sm uppercase'>{location.name}</h3>
                             </div>
                             <div>
                                 <p className='font-semibold opacity-50'>Chargers</p>
                                 {
-                                    location.chargers.map(charger => <button key={charger._id} className='mr-2 border px-2 bg-gray-100 rounded-lg'>{charger.name}</button>)
+                                    location.chargers.map(charger => <button
+                                        key={charger._id}
+                                        className='mr-2 mt-1 text-sm border px-2 bg-gray-100 rounded-lg'
+                                    >
+                                        {charger.name}
+                                    </button>)
                                 }
                             </div>
                         </div>)
                     }
                 </div>)
             }
-            
+
         </div>
     );
 };

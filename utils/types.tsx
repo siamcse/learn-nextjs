@@ -88,3 +88,14 @@ export type CompanyDetails = {
         }
     }
 }
+
+export type CreateCompany = {
+    companyName: string,
+    email: string,
+    phone: string,
+    country: string,
+    zip: number,
+    city: string,
+    address: string,
+    state: string
+}
