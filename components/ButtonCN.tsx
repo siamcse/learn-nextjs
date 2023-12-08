@@ -4,10 +4,10 @@ import cn from '@/utils/cn';
 type ButtonPropTypes = {
     children:ReactNode,
     className:string,
-    restProps:string[]
+    restProps:any
 }
 
-const ButtonCN = ({ children, className, ...restProps }: ButtonPropTypes) => {
+const ButtonCN = ({ children, className, ...restProps }: any) => {
     return (
         <button className={cn(
             'bg-orange-500 text-white  px-4 py-2 rounded',

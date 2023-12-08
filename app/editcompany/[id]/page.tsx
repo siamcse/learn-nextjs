@@ -31,7 +31,7 @@ const EditCompany = ({ params }: { params: { id: string } }) => {
     const [loading, setLoading] = useState(false);
 
     const { mutate, isPending } = useMutation({
-        mutationFn: (editedCompany: DataTypes) => {
+        mutationFn: (editedCompany: any) => {
             return axios.put(`http://192.168.0.186:3004/company/${id}`, editedCompany, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
