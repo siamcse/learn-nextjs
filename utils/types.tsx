@@ -99,3 +99,43 @@ export type CreateCompany = {
     address: string,
     state: string
 }
+
+export type SingleCompanyType = {
+    data: {
+        company: {
+            _id: string
+            name: string
+            companyAddressId: string
+            email: string
+            phone: string
+            website: string
+            ein: string
+            logoUrl: string
+            clientId: string
+            entityId: any
+            acc_customerId: string
+            acc_vendorId: string
+            invoiceGenerated: any
+            status: string
+            created_at: string
+            updated_at: string
+            __v: number
+        }
+        address: {
+            _id: string
+            country: string
+            city: string
+            state: string
+            zip: string
+            address: string
+            status: string
+            created_at: string
+            updated_at: string
+            __v: number
+        }
+        entity: any
+        entityAddress: any
+        companyAdmin: any
+        companyFee: any
+    }
+}

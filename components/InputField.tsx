@@ -7,17 +7,15 @@ type PropTypes = {
     register: any,
     name: string,
     label: string,
-    type: string,
-    defaultValue: string
+    type: string
 
 }
 
-const InputField = ({ className, register, name, label, type, defaultValue }: PropTypes) => {
+const InputField = ({ className, register, name, label, type }: PropTypes) => {
     return (
         <>
             <label htmlFor={name}>{label}</label>
             <input
-                defaultValue={defaultValue ?? ''}
                 {...register(name)}
                 className={cn('mt-1 border px-3 py-1 rounded focus:outline-none', className)}
                 type={type}

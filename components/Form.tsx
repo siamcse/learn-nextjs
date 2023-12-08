@@ -31,7 +31,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                 <div className='mt-4'>
                     <div className='mt-4 flex flex-col'>
                         <InputField
-                            defaultValue=''
                             className=''
                             label='Company Name'
                             name='name'
@@ -42,7 +41,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                     <div className='mt-4 md:flex gap-6'>
                         <div className='flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className='md:w-[430px]'
                                 label='Email Address'
                                 name='email'
@@ -52,7 +50,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                         </div>
                         <div className='flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className='md:w-[314px]'
                                 label='Phone Number'
                                 name='phone'
@@ -69,7 +66,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                     <div className='md:flex gap-5'>
                         <div className='mt-4 flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className=''
                                 label='Country'
                                 name='country'
@@ -79,7 +75,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                         </div>
                         <div className='mt-4 flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className=''
                                 label='Zip / Postal Code'
                                 name='zip'
@@ -89,7 +84,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                         </div>
                         <div className='mt-4 flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className=''
                                 label='City'
                                 name='city'
@@ -101,7 +95,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                     <div className='mt-4 md:flex gap-6'>
                         <div className='flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className='md:w-[430px]'
                                 label='Street Address'
                                 name='address'
@@ -111,7 +104,6 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                         </div>
                         <div className='flex flex-col'>
                             <InputField
-                                defaultValue=''
                                 className='md:w-[314px]'
                                 label='State / Province'
                                 name='state'

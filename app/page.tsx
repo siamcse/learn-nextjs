@@ -19,8 +19,8 @@ export default function Home() {
         <Button size={'small'}>All Company</Button>
       </Link>
       <Link href={'/pricing'}>
-        <ButtonCN className='bg-red-500 hover:bg-red-600 mt-5'>Pricing Page</ButtonCN>
-        </Link>
+        Pricing Page
+      </Link>
     </main>
   )
 }
