@@ -1,3 +1,4 @@
+import ButtonCN from '@/components/ButtonCN'
 import { Button } from '@/components/button'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,12 +12,13 @@ export default function Home() {
       <Link
         className='mt-2 text-blue-600 underline'
         href={{
-          pathname:'/allcompany',
-          query: { page: 1,size:10,query:'' },
+          pathname: '/allcompany',
+          query: { page: 1, size: 10, query: '' },
         }}
       >
         <Button size={'small'}>All Company</Button>
       </Link>
+      <ButtonCN className='bg-red-500 hover:bg-red-600 mt-5'>CN Button</ButtonCN>
     </main>
   )
 }
