@@ -8,11 +8,13 @@ type PropTypes = {
     handleSubmit: any,
     handleFormSubmit: any,
     isPending: boolean,
-    register: any
+    register: any,
+    errors:object,
+    handleZipField?:Function
 
 }
 
-const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: PropTypes) => {
+const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register, errors, handleZipField }: PropTypes) => {
     return (
         <form className='px-5' onSubmit={handleSubmit(handleFormSubmit)}>
             <div className='flex justify-between my-10'>
@@ -36,7 +38,9 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                             name='name'
                             register={register}
                             type='text'
+                            errors={errors}
                         />
+                        
                     </div>
                     <div className='mt-4 md:flex gap-6'>
                         <div className='flex flex-col'>
@@ -46,6 +50,7 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='email'
                                 register={register}
                                 type='email'
+                                errors={errors}
                             />
                         </div>
                         <div className='flex flex-col'>
@@ -55,6 +60,7 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='phone'
                                 register={register}
                                 type='text'
+                                errors={errors}
                             />
                         </div>
                     </div>
@@ -71,6 +77,7 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='country'
                                 register={register}
                                 type='text'
+                                errors={errors}
                             />
                         </div>
                         <div className='mt-4 flex flex-col'>
@@ -80,6 +87,8 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='zip'
                                 register={register}
                                 type='text'
+                                errors={errors}
+                                handleZipField={handleZipField}
                             />
                         </div>
                         <div className='mt-4 flex flex-col'>
@@ -89,6 +98,7 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='city'
                                 register={register}
                                 type='text'
+                                errors={errors}
                             />
                         </div>
                     </div>
@@ -100,6 +110,7 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='address'
                                 register={register}
                                 type='text'
+                                errors={errors}
                             />
                         </div>
                         <div className='flex flex-col'>
@@ -109,7 +120,9 @@ const Form = ({ title, handleSubmit, handleFormSubmit, isPending, register }: Pr
                                 name='state'
                                 register={register}
                                 type='text'
+                                errors={errors}
                             />
+                            
                         </div>
                     </div>
                 </div>

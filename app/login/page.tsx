@@ -7,19 +7,33 @@ import toast, { Toaster } from 'react-hot-toast';
 import Modal from '@/components/Modal';
 import { useMutation } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
+import { ZodType, z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 
-type ErrorResponse = {
-    response: any
+type SignInData = {
+    email: string,
+    password: string
 }
 
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const router = useRouter();
 
     const authUsername = "650307ae3b81447e5d793425";
     const authPassword = "ff427eeb-f60a-46c0-995e-7f1daa355eb8";
     const base64Credentials = btoa(authUsername + ":" + authPassword);
+
+    const signInSchema: ZodType<SignInData> = z.object({
+        email: z.string().email(),
+        password: z.string().min(6, { message: "Must be 6 or more characters long" })
+    });
+    const { register, handleSubmit, formState: { errors } } = useForm<SignInData>({
+        resolver: zodResolver(signInSchema)
+    });
 
     const { mutate, isError, isPending, failureReason } = useMutation({
         mutationFn: (authInfo) => {
@@ -31,29 +45,27 @@ const LoginPage = () => {
         },
     });
 
-
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        const email = e.target.email.value;
-        const password = e.target.password.value;
+    const handleSignIn = (data: SignInData) => {
         setLoading(true);
 
         const authInfo: any = {
             grantType: "password",
-            email: email,
-            password: password,
+            email: data.email,
+            password: data.password,
             refreshToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTAyYmEwNDg4NjQxNzUxMDE4NmFkNmEiLCJ1c2VyVHlwZSI6ImFkbWluIiwiY2xpZW50SWQiOiI2NTAzMDdhZTNiODE0NDdlNWQ3OTM0MjUiLCJlbWFpbCI6IjZzZW5zZWV2QGdtYWlsLmNvbSIsImlhdCI6MTY5NTM1OTE3OSwiZXhwIjoxNjk1MzU5Nzc5fQ.x6tNWy3Hz1BUM_PS0jpBwSWm7RHWtNks3o-UuJCUMcI"
         }
 
         mutate(authInfo, {
             onSuccess: (data) => {
-                console.log(data.data.auth.accessToken);
+                toast.success("Sign In Successfull.");
                 Cookies.set('token', data.data.auth.accessToken);
-                setLoading(false)
+                setLoading(false);
+                router.push('/');
             },
             onError: (err: unknown) => {
                 if (err instanceof AxiosError) {
                     toast.error(err.response?.data.message);
+                    console.log(err.response?.data.message);
                     setLoading(false);
                 }
             }
@@ -79,16 +91,17 @@ const LoginPage = () => {
                     />
                     <h1 className="text-center text-[32px] font-bold">Sign in to your account</h1>
                 </div>
-                <form onSubmit={handleSubmit} className='md:w-[450px] mx-2 md:mx-0 p-3 md:p-8 shadow-md rounded-2xl bg-[#ffffff]'>
+                <form onSubmit={handleSubmit(handleSignIn)} className='md:w-[450px] mx-2 md:mx-0 p-3 md:p-8 shadow-md rounded-2xl bg-[#ffffff]'>
                     <div className='pb-3'>
                         <label className='pb-2 text-sm font-medium block'>Email Address</label>
-                        <input name='email' className='w-full border px-3 py-2 rounded-lg focus:outline-none' type="email" placeholder="Email Address" />
+                        <input {...register("email")} name='email' className='w-full border px-3 py-2 rounded-lg focus:outline-none' type="email" placeholder="Email Address" />
+                        {errors.email ? <span className='text-red-600'>{errors.email.message}</span> : ''}
                     </div>
-                    <div className=''>
+                    <div className='relative'>
                         <label className='pb-2 text-sm font-medium block'>Password</label>
                         <div className='flex justify-between items-center w-full border  rounded-lg'>
-                            <input name='password' className='w-full px-3 py-2 rounded-lg focus:outline-none' type={`${showPassword ? 'text' : 'password'}`} placeholder="Password" />
-                            <div className='px-2' onClick={() => setShowPassword(!showPassword)}>
+                            <input {...register("password")} name='password' className='w-full px-3 py-2 rounded-lg focus:outline-none' type={`${showPassword ? 'text' : 'password'}`} placeholder="Password" />
+                            <div className='px-2 absolute right-0' onClick={() => setShowPassword(!showPassword)}>
                                 {
                                     showPassword ? <>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M247.31,124.76c-.35-.79-8.82-19.58-27.65-38.41C194.57,61.26,162.88,48,128,48S61.43,61.26,36.34,86.35C17.51,105.18,9,124,8.69,124.76a8,8,0,0,0,0,6.5c.35.79,8.82,19.57,27.65,38.4C61.43,194.74,93.12,208,128,208s66.57-13.26,91.66-38.34c18.83-18.83,27.3-37.61,27.65-38.4A8,8,0,0,0,247.31,124.76ZM128,192c-30.78,0-57.67-11.19-79.93-33.25A133.47,133.47,0,0,1,25,128,133.33,133.33,0,0,1,48.07,97.25C70.33,75.19,97.22,64,128,64s57.67,11.19,79.93,33.25A133.46,133.46,0,0,1,231.05,128C223.84,141.46,192.43,192,128,192Zm0-112a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Z"></path></svg>
@@ -99,6 +112,7 @@ const LoginPage = () => {
                                 }
                             </div>
                         </div>
+                        {errors.password ? <span className='text-red-600'>{errors.password.message}</span> : ''}
                     </div>
                     <p className='flex justify-end items-end text-sm text-[#17494d] font-medium mt-6 cursor-pointer' onClick={handleForgotPassword}>Forgot password?</p>
                     <button disabled={loading} type='submit' className={`w-full mt-6 py-3 flex items-center justify-center gap-2 bg-[#17494d] text-white rounded-lg disabled:opacity-70`}>

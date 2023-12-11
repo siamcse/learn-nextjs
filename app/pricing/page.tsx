@@ -1,8 +1,18 @@
+'use client'
 import { pricing } from '@/utils/pricing';
-import React from 'react';
+import React, { useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 const PricingPage = () => {
-
+    const token = Cookies.get('token');
+    const router = useRouter();
+    
+    useEffect(()=>{
+        if(!token){
+            router.push('/login');
+        }
+    },[token])
     return (
         <div className='container mx-auto mt-4 p-2'>
             <h1 className='text-2xl font-bold'>Pricing</h1>

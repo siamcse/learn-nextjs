@@ -6,9 +6,13 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import Cookies from 'js-cookie';
-import { SingleCompanyType } from '@/utils/types';
 import { useRouter } from 'next/navigation';
 import { SpinnerGap } from '@phosphor-icons/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+type FieldType = "company" | "company.name" | "company.email" | "company.phone" | "company.address" | "company.state" | "company.zip" | "company.city" | "company.country"
+
 
 type DataTypes = {
     company: {
@@ -24,11 +28,25 @@ type DataTypes = {
 }
 
 const EditCompany = ({ params }: { params: { id: string } }) => {
+    const companySchema = z.object({
+        name: z.string().min(1, { message: "Name is required" }),
+        email: z.string().email(),
+        phone: z.string().includes("+"),
+        address: z.string().min(1, { message: "Address is required" }),
+        state: z.string().min(1, { message: "State is required" }),
+        zip: z.string().min(5, { message: "Zip must be 5 digits" }),
+        city: z.string().min(1, { message: "City is required" }),
+        country: z.string().min(1, { message: "Country is required" })
+
+    })
     const token = Cookies.get('token');
     const id = params.id;
-    const { register, handleSubmit, setValue } = useForm();
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<DataTypes>({
+        resolver: zodResolver(companySchema)
+    });
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    console.log(token);
 
     const { mutate, isPending } = useMutation({
         mutationFn: (editedCompany: any) => {
@@ -49,25 +67,34 @@ const EditCompany = ({ params }: { params: { id: string } }) => {
             }
         })
             .then(res => {
-                setValue('name', res.data.company.name)
-                setValue('email', res.data.company.email)
-                setValue('phone', res.data.company.phone)
-                setValue('country', res.data.address.country)
-                setValue('city', res.data.address.city)
-                setValue('zip', res.data.address.zip)
-                setValue('state', res.data.address.state)
-                setValue('address', res.data.address.address)
+                const fieldValues = {
+                    'name': res.data.company.name,
+                    'email': res.data.company.email,
+                    'phone': res.data.company.phone,
+                    'address': res.data.address.address,
+                    'city': res.data.address.city,
+                    'country': res.data.address.country,
+                    'zip': res.data.address.zip,
+                    'state': res.data.address.state,
+                }
+                Object.entries(fieldValues).forEach(([filedName, value]: FieldType[]) => {
+                    setValue(filedName, value);
+                })
                 setLoading(false);
             })
             .catch(e => {
-                console.log(e)
+                console.log(e.message);
+                toast.error("e.message");
                 setLoading(false);
             })
 
     }, [id])
 
-
-
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+        }
+    }, [token])
 
     const handleFormSubmit = (data: DataTypes) => {
         console.log(data);
@@ -105,6 +132,7 @@ const EditCompany = ({ params }: { params: { id: string } }) => {
                 handleFormSubmit={handleFormSubmit}
                 isPending={isPending}
                 register={register}
+                errors={errors}
             />
             <Toaster />
         </div>

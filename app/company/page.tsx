@@ -1,10 +1,11 @@
 'use client'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { CompanyDetails } from '@/utils/types';
 import { SpinnerGap } from '@phosphor-icons/react';
+import { useRouter } from 'next/navigation';
 
 const CompanyPage = () => {
     const token = Cookies.get('token');
@@ -19,6 +20,13 @@ const CompanyPage = () => {
             return res.data;
         }
     })
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+        }
+    }, [token])
 
     if (isFetching) {
         return <div className='min-h-screen flex justify-center items-center'>

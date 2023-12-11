@@ -20,6 +20,12 @@ const AllCompanyPage = () => {
     const [searchValue, setSearchValue] = useState('');
     const token = Cookies.get('token');
 
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+        }
+    }, [token])
+
     const { data, error, isFetching, isPlaceholderData } = useQuery({
         queryKey: ["company", page, getPage, getSize, searchValue],
         queryFn: async () => {
