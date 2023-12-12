@@ -44,50 +44,64 @@ type ChargerType = {
     __v: number
 }
 
+
+
 export default function Example() {
     const token = Cookies.get('token');
 
     const { data, isFetching } = useQuery({
         queryKey: ['token'],
         queryFn: async () => {
-            const res: ManufacturerType = await axios.get(`http://192.168.0.186:3004/manufacturer`, {
+            const res = await axios.get(`http://192.168.0.186:3004/manufacturer`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            return res.data;
+            return res.data as ChargerType[];
         }
     })
-    const [selected, setSelected] = useState(!isFetching && data ? data[0] : '');
+
+    const [selected, setSelected] = useState<ChargerType>();
     const [query, setQuery] = useState('');
+    const [loading, setLoading] = useState(false);
+
     console.log(selected);
 
-    console.log(data);
 
-    const filteredPeople =
-        query === ''
-            ? data
-            : data?.filter((person: { person: { name: string } }) =>
-                person.name
-                    .toLowerCase()
-                    .replace(/\s+/g, '')
-                    .includes(query.toLowerCase().replace(/\s+/g, ''))
-            )
-    if (isFetching) {
+    useEffect(() => {
+        setLoading(true);
+        axios.get(`http://192.168.0.186:3004/charger/65685b405968894bc209a0f3`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(res => {
+            setSelected(res.data.manufacturer);
+            setLoading(false)
+        }).catch(e => {
+            setLoading(false)
+        })
+    }, [token])
+
+
+    const filteredPeople = query === '' ? data : (data)?.filter((person: any) => person.name.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, '')))
+    if (isFetching || loading) {
         return <Loader />
     }
 
+    const compareById: (a: ChargerType, b: ChargerType) => boolean = (a, b) => {
+        return a._id === b._id;
+    };
 
     return (
         <div className='container mx-auto mt-10'>
             <h1 className='text-xl font-semibold'>Primary Information</h1>
             <div className="">
-                <Combobox value={selected} onChange={setSelected}>
+                <Combobox value={selected} by={compareById} onChange={setSelected}>
                     <div className="relative mt-1">
                         <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                             <Combobox.Input
                                 className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:outline-none"
-                                displayValue={(person) => person.name}
+                                displayValue={(person: ChargerType) => person.name}
                                 onChange={(event) => setQuery(event.target.value)}
                             />
                             <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -107,9 +121,9 @@ export default function Example() {
                                         Nothing found.
                                     </div>
                                 ) : (
-                                    filteredPeople?.map((person) => (
+                                    filteredPeople?.map((person: ChargerType) => (
                                         <Combobox.Option
-                                            key={person.id}
+                                            key={person._id}
                                             className={({ active }) =>
                                                 `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-teal-600 text-white' : 'text-gray-900'
                                                 }`
