@@ -139,3 +139,32 @@ export type SingleCompanyType = {
         companyFee: any
     }
 }
+
+export type ManufacturerType = {
+    data: {
+        _id: string
+        name: string
+        clientId: string
+        chargerId: string
+        address: string
+        description: string
+        contact: string
+        status: string
+        created_at: string
+        updated_at: string
+        __v: number
+    }
+}
+export type ChargerType = {
+    _id: string
+    name: string
+    clientId: string
+    chargerId: string
+    address: string
+    description: string
+    contact: string
+    status: string
+    created_at: string
+    updated_at: string
+    __v: number
+}

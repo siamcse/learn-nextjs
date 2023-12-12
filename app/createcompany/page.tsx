@@ -82,8 +82,6 @@ const CreateCompanyPage = () => {
         },
         enabled: !!zipId
     });
-    console.log(status);
-    console.log(data);
     useEffect(() => {
         if (zipId) {
             setValue("country", data?.data.country);
