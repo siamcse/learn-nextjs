@@ -7,7 +7,8 @@ import { SpinnerGap, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import ButtonCN from '@/components/ButtonCN';
-import {PencilSimple} from '@phosphor-icons/react'
+import {PencilSimple} from '@phosphor-icons/react';
+import Loader from '@/components/Loader'
 
 const AllCompanyPage = () => {
     const searchParams = useSearchParams();
@@ -56,9 +57,7 @@ const AllCompanyPage = () => {
     }
     
     if (isFetching) {
-        return <div className='min-h-screen flex justify-center items-center'>
-            <SpinnerGap className='inline-block animate-spin rounded-full  motion-reduce:animate-[spin_1.5s_linear_infinite]' size={50} color="black" />
-        </div>
+        return <Loader></Loader>
     }
 
     const handleEdit = (id)=>{

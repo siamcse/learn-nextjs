@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.17",
     "@hookform/resolvers": "^3.3.2",
     "@material-tailwind/html": "^2.1.0",
     "@phosphor-icons/react": "^2.0.15",
