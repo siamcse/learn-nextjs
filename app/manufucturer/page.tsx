@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import ButtonCN from '@/components/ButtonCN'
-import { ChargerType } from '@/utils/types'
+import { ChargerInformation, ChargerType } from '@/utils/types'
 import ComboBox from '@/components/ComboBox'
 
 const people = [
@@ -23,7 +23,8 @@ const people = [
 ]
 
 const chargerSchema = z.object({
-    name: z.string().min(1, { message: "Name is required" })
+    name: z.string().min(1, { message: "Name is required" }),
+    model: z.string().min(1, { message: "Model is required" }),
 })
 
 
@@ -59,7 +60,7 @@ export default function Example() {
     })
 
 
-    const { register, setValue, handleSubmit, formState: { errors } } = useForm<ChargerType>({
+    const { register, setValue, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
         resolver: zodResolver(chargerSchema)
     })
     useEffect(() => {
@@ -93,7 +94,7 @@ export default function Example() {
         return a._id === b._id;
     };
 
-    const handleForm = (data: ChargerType) => {
+    const handleForm = (data: ChargerInformation) => {
         console.log(data);
     }
 
@@ -107,7 +108,7 @@ export default function Example() {
                             <p className='mb-2'>Charger Manufucturer</p>
                             <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                                 <Combobox.Input
-                                    {...register("name")}
+                                    {...register("model")}
                                     className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:outline-none"
                                     displayValue={(person: ChargerType) => person.name}
                                     onChange={(event) => setManuQuery(event.target.value)}

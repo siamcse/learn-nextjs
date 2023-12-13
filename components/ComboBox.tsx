@@ -2,13 +2,13 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { Fragment, useEffect, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { CaretDown, Check } from '@phosphor-icons/react'
-import { ChargerType } from '@/utils/types';
+import { ChargerInformation, ChargerType } from '@/utils/types';
 import { FieldErrors } from 'react-hook-form';
 
 type ComboBoxProps = {
     selected: any,
     setSelected: Dispatch<SetStateAction<ChargerType | undefined>>,
-    errors: FieldErrors<ChargerType>,
+    errors: any,
     register: any,
     query: string,
     setQuery: any,
@@ -36,7 +36,7 @@ const ComboBox = ({name, selected, setSelected, errors, register, query, setQuer
                         <CaretDown size={20} />
                     </Combobox.Button>
                 </div>
-                {errors.name ? <span className='text-red-600'>{errors.name.message}</span> : ''}
+                {errors[name] ? <span className='text-red-600'>{errors[name].message}</span> : ''}
                 <Transition
                     as={Fragment}
                     leave="transition ease-in duration-100"

@@ -168,3 +168,9 @@ export type ChargerType = {
     updated_at: string
     __v: number
 }
+
+export type ChargerInformation = {
+    name:string,
+    model:string,
+    manufucturer:string,
+}
