@@ -23,7 +23,7 @@ const ComboBox = ({ name, label, fetching, selected, setSelected, errors, regist
     };
 
     return (
-        <Combobox value={selected} by={compareById} onChange={setSelected}>
+        <Combobox value={selected || ''} by={compareById} onChange={setSelected}>
             <div className="relative mt-2">
                 <p className='mb-2'>{label}</p>
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -31,7 +31,7 @@ const ComboBox = ({ name, label, fetching, selected, setSelected, errors, regist
                         placeholder='Select'
                         {...register(name)}
                         className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:outline-none"
-                        displayValue={(person: any) => person?.name}
+                        displayValue={(data: any) => data?.name}
                         onChange={(event) => setQuery(event.target.value)}
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -41,7 +41,7 @@ const ComboBox = ({ name, label, fetching, selected, setSelected, errors, regist
                         }
                     </Combobox.Button>
                 </div>
-                {errors[name] ? <span className='text-red-600'>{errors[name].message}</span> : ''}
+                {errors[name] ? <span className='text-red-600 text-sm'>{errors[name].message}</span> : ''}
                 <Transition
                     as={Fragment}
                     leave="transition ease-in duration-100"
@@ -55,14 +55,14 @@ const ComboBox = ({ name, label, fetching, selected, setSelected, errors, regist
                                 Nothing found.
                             </div>
                         ) : (
-                            filteredData?.map((person: any) => (
+                            filteredData?.map((data: any) => (
                                 <Combobox.Option
-                                    key={person._id}
+                                    key={data._id}
                                     className={({ active }) =>
                                         `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-teal-600 text-white' : 'text-gray-900'
                                         }`
                                     }
-                                    value={person}
+                                    value={data}
                                 >
                                     {({ selected, active }) => (
                                         <>
@@ -70,7 +70,7 @@ const ComboBox = ({ name, label, fetching, selected, setSelected, errors, regist
                                                 className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                                                     }`}
                                             >
-                                                {person.name}
+                                                {data.name}
                                             </span>
                                             {selected ? (
                                                 <span

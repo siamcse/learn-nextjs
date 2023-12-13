@@ -11,6 +11,7 @@ import { ChargerInformation, ChargerType, ModelType } from '@/utils/types'
 import ComboBox from '@/components/ComboBox'
 import { getChargerModel, getManufucturer } from '@/utils/manufucturer-api'
 
+//Changeable file
 
 const chargerSchema = z.object({
     model: z.string().min(1, { message: "Model is required" }),
@@ -64,7 +65,7 @@ export default function Example() {
     })
     useEffect(() => {
         if (manufacturer) {
-            setValue('manufacturer', manufacturer?.name);
+            setValue('manufacturer', manufacturer?.name || '');
         }
         if (model) {
             setValue('model', model?.name)
