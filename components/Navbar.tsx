@@ -25,7 +25,7 @@ const Navbar = () => {
         <div className='container mx-auto my-3 flex justify-between'>
             <Link href='/'><ButtonCN className='bg-teal-600 hover:bg-white hover:border hover:text-black'>Home</ButtonCN></Link>
             {
-                token ? <ButtonCN onClick={handleLogOut} className='bg-teal-600 hover:bg-white hover:border hover:text-black'>LogOut</ButtonCN> : null
+                token ? <ButtonCN onClick={handleLogOut} className='bg-teal-600 hover:bg-white hover:border hover:text-black'>Log Out</ButtonCN> : null
             }
         </div>
     );

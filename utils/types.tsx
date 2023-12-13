@@ -169,8 +169,32 @@ export type ChargerType = {
     __v: number
 }
 
+export type ModelType =  {
+    _id: string
+    name: string
+    modelCode?: string
+    input?: string
+    output?: string
+    communicationType?: string
+    isMeterVIChangeable?: string
+    features?: string[]
+    connectivity?: string[]
+    mount?: string[]
+    manufacturerId: string
+    clientId: string
+    maxPower: any
+    status: string
+    created_at: string
+    updated_at: string
+    __v: number
+    triggerType?: string
+    TriggerType?: string
+    maxPowerType?: string
+}
+
+
 export type ChargerInformation = {
     name:string,
     model:string,
-    manufucturer:string,
+    manufacturer:string,
 }
