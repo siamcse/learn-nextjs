@@ -10,23 +10,26 @@ import ButtonCN from '@/components/ButtonCN'
 import { ChargerInformation, ChargerType, ModelType } from '@/utils/types'
 import ComboBox from '@/components/ComboBox'
 import { getChargerModel, getManufucturer } from '@/utils/manufucturer-api'
+import ManuComboBox from '@/components/manuComboBox';
 
 
 const chargerSchema = z.object({
     manufacturer: z.string().min(1, { message: "Manufucturer is required" }),
     model: z.string().min(1, { message: "Model is required" }),
+    manufacturerId:z.string()
 })
 
 
 export default function Example() {
     const token = Cookies.get('token');
-    const [manufacturer, setManufacturer] = useState<ChargerType>();
-    const [model, setModel] = useState<ModelType | null | undefined>();
+    const [manuId, setManuId] = useState('');
+    const [modelId, setModelId] = useState('');
+
     const [modelQuery, setModelQuery] = useState('');
     const [manuQuery, setManuQuery] = useState('');
     const [initialDataFetched, setInitialDataFetched] = useState(false);
 
-    const { data, isFetching } = useQuery({
+    const { data, isSuccess, isFetching } = useQuery({
         queryKey: ['token'],
         queryFn: async () => {
             const res = await axios.get(`http://192.168.0.186:3004/manufacturer`, {
@@ -37,39 +40,24 @@ export default function Example() {
             return res.data as ChargerType[];
         }
     })
+    console.log(manuId);
 
     const manufacturerQuery = useQuery({ queryKey: ['manufacturer'], queryFn: getManufucturer })
-    const modelQueryData = useQuery({ queryKey: [manufacturer], queryFn: () => getChargerModel(manufacturer?._id), enabled: !!manufacturer?._id });
-
-    useEffect(() => {
-        if (manufacturerQuery.isSuccess) {
-            setManufacturer(manufacturerQuery.data.data.manufacturer)
-        }
-    }, [manufacturerQuery.isSuccess])
+    const modelQueryData = useQuery({ queryKey: [manuId], queryFn: () => getChargerModel(manuId), enabled: !!manuId });
 
     useEffect(() => {
         if (initialDataFetched) {
-            setModel(undefined);
             setValue('model', '');
         }
         if (modelQueryData.isSuccess && !initialDataFetched) {
-            setModel(modelQueryData.data.data[0]);
             setInitialDataFetched(true);
         }
 
-    }, [modelQueryData.isSuccess,manufacturer])
+    }, [modelQueryData.isSuccess, manuId])
 
-    const { register, setValue, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
+    const { register, setValue, getValues, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
         resolver: zodResolver(chargerSchema)
     })
-    useEffect(() => {
-        if (manufacturer) {
-            setValue('manufacturer', manufacturer?.name);
-        }
-        if (model) {
-            setValue('model', model?.name)
-        }
-    }, [manufacturer, model])
 
     const filteredManufucture = manuQuery === '' ? data : (data)?.filter((data: any) => data.name.toLowerCase().replace(/\s+/g, '').includes(manuQuery.toLowerCase().replace(/\s+/g, '')))
 
@@ -80,6 +68,7 @@ export default function Example() {
     }
     const handleForm = (data: ChargerInformation) => {
         console.log(data);
+        console.log(getValues('manufacturerId'))
     }
 
     return (
@@ -87,30 +76,36 @@ export default function Example() {
             <h1 className='text-xl font-semibold'>Primary Information</h1>
             <form onSubmit={handleSubmit(handleForm)} className="">
                 <div className='flex gap-10'>
-                    <ComboBox
+                    <ManuComboBox
                         name="manufacturer"
                         label="Charger Manufacturer"
-                        selected={manufacturer}
-                        setSelected={setManufacturer}
+                        defaultValue={manufacturerQuery?.data?.data?.manufacturer}
+                        data={data}
                         query={manuQuery}
                         setQuery={setManuQuery}
                         register={register}
                         errors={errors}
                         filteredData={filteredManufucture}
                         fetching={isFetching}
+                        isSuccess={isSuccess}
+                        setManuId={setManuId}
+                        setValue={setValue}
 
                     />
-                    <ComboBox
+                    <ManuComboBox
                         name="model"
                         label="Charger Model Name"
-                        selected={model}
-                        setSelected={setModel}
+                        defaultValue={!initialDataFetched ? modelQueryData?.data?.data[0] : ''}
+                        data={modelQueryData?.data?.data}
                         query={modelQuery}
                         setQuery={setModelQuery}
                         register={register}
                         errors={errors}
                         filteredData={filteredModel}
                         fetching={modelQueryData.isFetching}
+                        isSuccess={modelQueryData.isSuccess}
+                        setManuId={setModelId}
+                        setValue={setValue}
 
                     />
                 </div>
