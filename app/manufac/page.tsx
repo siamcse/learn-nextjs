@@ -7,8 +7,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import ButtonCN from '@/components/ButtonCN'
-import { ChargerInformation, ChargerType, ModelType } from '@/utils/types'
-import ComboBox from '@/components/ComboBox'
+import { ChargerInformation, ChargerType } from '@/utils/types'
 import { getChargerModel, getManufucturer } from '@/utils/manufucturer-api'
 import ManuComboBox from '@/components/manuComboBox';
 
@@ -23,6 +22,8 @@ const chargerSchema = z.object({
 
 export default function Example() {
     const token = Cookies.get('token');
+    const [manufacturerId, setManufacturerId] = useState('');
+    const [modelId, setModelId] = useState('');
 
     const [modelQuery, setModelQuery] = useState('');
     const [manuQuery, setManuQuery] = useState('');
@@ -45,7 +46,7 @@ export default function Example() {
     })
 
     const manufacturerQuery = useQuery({ queryKey: ['manufacturer'], queryFn: getManufucturer })
-    const modelQueryData = useQuery({ queryKey: [getValues('manufacturerId')], queryFn: () => getChargerModel(getValues('manufacturerId')), enabled: !!getValues('manufacturerId') });
+    const modelQueryData = useQuery({ queryKey: [manufacturerId], queryFn: () => getChargerModel(manufacturerId), enabled: !!manufacturerId });
 
     useEffect(() => {
         if (initialDataFetched) {
@@ -54,21 +55,17 @@ export default function Example() {
         if (modelQueryData.isSuccess && !initialDataFetched) {
             setInitialDataFetched(true);
         }
-        if(getValues('manufacturerId')){
-            console.log("manu", getValues('manufacturerId'))
+    }, [modelQueryData.isSuccess, manufacturerId])
+
+    useEffect(() => {
+        const fieldIds = {
+            "manufacturerId": manufacturerId,
+            "modelId": modelId
         }
-
-    }, [modelQueryData.isSuccess, getValues('manufacturerId')])
-
-    // useEffect(() => {
-    //     const fieldIds = {
-    //         "manufacturerId": manuId,
-    //         "modelId": modelId
-    //     }
-    //     Object.entries(fieldIds).forEach(([fieldName, value]: any) => {
-    //         setValue(fieldName, value);
-    //     })
-    // }, [manuId, modelId])
+        Object.entries(fieldIds).forEach(([fieldName, value]: any) => {
+            setValue(fieldName, value);
+        })
+    }, [manufacturerId, modelId])
 
 
 
@@ -103,6 +100,7 @@ export default function Example() {
                         isSuccess={isSuccess}
                         setValue={setValue}
                         getValues={getValues}
+                        setId={setManufacturerId}
 
                     />
                     <ManuComboBox
@@ -120,6 +118,7 @@ export default function Example() {
                         isSuccess={modelQueryData.isSuccess}
                         setValue={setValue}
                         getValues={getValues}
+                        setId={setModelId}
 
                     />
                 </div>

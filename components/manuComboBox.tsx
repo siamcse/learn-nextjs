@@ -18,10 +18,11 @@ type ComboBoxProps = {
     data: any,
     isSuccess: boolean,
     setValue: any,
-    getValues:any,
+    getValues: any,
+    setId: any,
 }
 
-const ManuComboBox = ({ name, id, label, data, defaultValue, setValue, getValues, fetching, isSuccess, errors, register, query, setQuery, filteredData }: ComboBoxProps) => {
+const ManuComboBox = ({ name, id, label, data, defaultValue, setValue, setId, getValues, fetching, isSuccess, errors, register, query, setQuery, filteredData }: ComboBoxProps) => {
     const [selected, setSelected] = useState(defaultValue);
     const [selectedId, setSelectedId] = useState(defaultValue?._id);
 
@@ -38,6 +39,7 @@ const ManuComboBox = ({ name, id, label, data, defaultValue, setValue, getValues
         if (selected) {
             setValue(name, selected?.name);
             setValue(id, selectedId);
+            setId(selected._id);
         }
     }, [selected, setValue, id, fetching, isSuccess, selectedId])
 
@@ -93,7 +95,7 @@ const ManuComboBox = ({ name, id, label, data, defaultValue, setValue, getValues
                                 <Combobox.Option
                                     key={data._id}
                                     className={({ active }) =>
-                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-teal-600 text-white' : 'text-gray-900'
+                                        `relative cursor-default select-none py-2 pl-3 pr-10 ${active ? 'bg-teal-600 text-white' : 'text-gray-900'
                                         }`
                                     }
                                     value={data}
