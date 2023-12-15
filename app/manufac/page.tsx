@@ -16,18 +16,21 @@ import ManuComboBox from '@/components/manuComboBox';
 const chargerSchema = z.object({
     manufacturer: z.string().min(1, { message: "Manufucturer is required" }),
     model: z.string().min(1, { message: "Model is required" }),
-    manufacturerId:z.string()
+    manufacturerId: z.string(),
+    modelId: z.string()
 })
 
 
 export default function Example() {
     const token = Cookies.get('token');
-    const [manuId, setManuId] = useState('');
-    const [modelId, setModelId] = useState('');
 
     const [modelQuery, setModelQuery] = useState('');
     const [manuQuery, setManuQuery] = useState('');
     const [initialDataFetched, setInitialDataFetched] = useState(false);
+
+    const { register, setValue, getValues, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
+        resolver: zodResolver(chargerSchema)
+    })
 
     const { data, isSuccess, isFetching } = useQuery({
         queryKey: ['token'],
@@ -40,10 +43,9 @@ export default function Example() {
             return res.data as ChargerType[];
         }
     })
-    console.log(manuId);
 
     const manufacturerQuery = useQuery({ queryKey: ['manufacturer'], queryFn: getManufucturer })
-    const modelQueryData = useQuery({ queryKey: [manuId], queryFn: () => getChargerModel(manuId), enabled: !!manuId });
+    const modelQueryData = useQuery({ queryKey: [getValues('manufacturerId')], queryFn: () => getChargerModel(getValues('manufacturerId')), enabled: !!getValues('manufacturerId') });
 
     useEffect(() => {
         if (initialDataFetched) {
@@ -52,12 +54,23 @@ export default function Example() {
         if (modelQueryData.isSuccess && !initialDataFetched) {
             setInitialDataFetched(true);
         }
+        if(getValues('manufacturerId')){
+            console.log("manu", getValues('manufacturerId'))
+        }
 
-    }, [modelQueryData.isSuccess, manuId])
+    }, [modelQueryData.isSuccess, getValues('manufacturerId')])
 
-    const { register, setValue, getValues, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
-        resolver: zodResolver(chargerSchema)
-    })
+    // useEffect(() => {
+    //     const fieldIds = {
+    //         "manufacturerId": manuId,
+    //         "modelId": modelId
+    //     }
+    //     Object.entries(fieldIds).forEach(([fieldName, value]: any) => {
+    //         setValue(fieldName, value);
+    //     })
+    // }, [manuId, modelId])
+
+
 
     const filteredManufucture = manuQuery === '' ? data : (data)?.filter((data: any) => data.name.toLowerCase().replace(/\s+/g, '').includes(manuQuery.toLowerCase().replace(/\s+/g, '')))
 
@@ -68,7 +81,6 @@ export default function Example() {
     }
     const handleForm = (data: ChargerInformation) => {
         console.log(data);
-        console.log(getValues('manufacturerId'))
     }
 
     return (
@@ -78,6 +90,7 @@ export default function Example() {
                 <div className='flex gap-10'>
                     <ManuComboBox
                         name="manufacturer"
+                        id="manufacturerId"
                         label="Charger Manufacturer"
                         defaultValue={manufacturerQuery?.data?.data?.manufacturer}
                         data={data}
@@ -88,12 +101,13 @@ export default function Example() {
                         filteredData={filteredManufucture}
                         fetching={isFetching}
                         isSuccess={isSuccess}
-                        setManuId={setManuId}
                         setValue={setValue}
+                        getValues={getValues}
 
                     />
                     <ManuComboBox
                         name="model"
+                        id="modelId"
                         label="Charger Model Name"
                         defaultValue={!initialDataFetched ? modelQueryData?.data?.data[0] : ''}
                         data={modelQueryData?.data?.data}
@@ -104,8 +118,8 @@ export default function Example() {
                         filteredData={filteredModel}
                         fetching={modelQueryData.isFetching}
                         isSuccess={modelQueryData.isSuccess}
-                        setManuId={setModelId}
                         setValue={setValue}
+                        getValues={getValues}
 
                     />
                 </div>

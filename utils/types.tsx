@@ -196,5 +196,6 @@ export type ModelType =  {
 export type ChargerInformation = {
     model:string,
     manufacturer:string,
-    manufacturerId:string
+    manufacturerId:string,
+    modelId:string,
 }

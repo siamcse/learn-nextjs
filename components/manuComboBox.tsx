@@ -11,37 +11,35 @@ type ComboBoxProps = {
     setQuery: any,
     filteredData: any,
     name: string,
+    id: string,
     label: string,
     fetching: boolean,
     defaultValue: any,
     data: any,
     isSuccess: boolean,
-    setManuId: any,
     setValue: any,
+    getValues:any,
 }
 
-const ManuComboBox = ({ name, label, data, defaultValue, setValue, setManuId, fetching, isSuccess, errors, register, query, setQuery, filteredData }: ComboBoxProps) => {
+const ManuComboBox = ({ name, id, label, data, defaultValue, setValue, getValues, fetching, isSuccess, errors, register, query, setQuery, filteredData }: ComboBoxProps) => {
     const [selected, setSelected] = useState(defaultValue);
+    const [selectedId, setSelectedId] = useState(defaultValue?._id);
 
     useEffect(() => {
         if (isSuccess && defaultValue) {
             setSelected(defaultValue);
+            setSelectedId(defaultValue._id);
         }
     }, [isSuccess, defaultValue])
 
-    useEffect(() => {
-        if (selected) {
-            setManuId(selected._id);
-            setValue('manufacturerId',selected._id);
-            console.log(selected._id);
-        }
-    }, [selected])
+    console.log(getValues());
 
     useEffect(() => {
         if (selected) {
             setValue(name, selected?.name);
+            setValue(id, selectedId);
         }
-    }, [selected])
+    }, [selected, setValue, id, fetching, isSuccess, selectedId])
 
 
     const compareById: (a: any, b: any) => boolean = (a, b) => {
@@ -49,7 +47,14 @@ const ManuComboBox = ({ name, label, data, defaultValue, setValue, setManuId, fe
     };
 
     return (
-        <Combobox value={selected || ''} by={compareById} onChange={setSelected}>
+        <Combobox
+            value={selected || ''}
+            by={compareById}
+            onChange={(e) => {
+                setSelected(e)
+                setSelectedId(e._id)
+            }}
+        >
             <div className="relative mt-2">
                 <p className='mb-2'>{label}</p>
                 <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -58,7 +63,10 @@ const ManuComboBox = ({ name, label, data, defaultValue, setValue, setManuId, fe
                         {...register(name)}
                         className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:outline-none"
                         displayValue={(data: any) => data?.name}
-                        onChange={(event) => setQuery(event.target.value)}
+                        onChange={(event) => {
+                            console.log("event", event)
+                            setQuery(event.target.value)
+                        }}
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                         {
@@ -93,7 +101,7 @@ const ManuComboBox = ({ name, label, data, defaultValue, setValue, setManuId, fe
                                     {({ selected, active }) => (
                                         <>
                                             <span
-                                            title={data.name}
+                                                title={data.name}
                                                 className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                                                     }`}
                                             >
