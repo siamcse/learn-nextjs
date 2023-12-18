@@ -14,7 +14,9 @@ import SelectOptions from '@/components/SelectOptions';
 import { fieldRequired } from '@/globalVariables';
 
 type FieldType = "manufacturer" | "model" | "manufacturer.value" | "manufacturer.label" | "model.value" | "model.label"
-
+type UpdatedDataType = {
+    [key: string]: string
+}
 
 const chargerSchema = z.object({
     // manufacturer: z.string().min(1, { message: fieldRequired }),
@@ -60,8 +62,8 @@ export default function Example() {
     })
 
     const manufacturerQuery = useQuery({ queryKey: ['manufacturer'], queryFn: getManufucturer })
-    const modelQueryData = useQuery({ queryKey: [manufacturerId], queryFn: () => getChargerModel(manufacturerId), enabled: !!manufacturerId });
-    // console.log("values", getValues('manufacturer2'))
+    const modelQueryData = useQuery({ queryKey: [getValues('manufacturer')?.value], queryFn: () => getChargerModel(getValues('manufacturer')?.value), enabled: !!getValues('manufacturer')?.value });
+    // console.log("values", getValues('manufacturer'))
 
     useEffect(() => {
         if (initialDataFetched) {
@@ -93,12 +95,14 @@ export default function Example() {
     }
     const handleForm = (data: ChargerInformation) => {
         // console.log("formSubmitdata", data);
-        // console.log(getValues('manufacturer2'))
+        const updatedData: UpdatedDataType = {};
         const formData = {
             'manufacturerId': data.manufacturer.value,
             'chargerModel': data.model.value
         }
-        console.log("formData", formData);
+        Object.entries(formData).forEach(([name, value]: [string, string]) => updatedData[name] = value)
+
+        console.log('formData: ', updatedData);
     }
 
     // console.log("errors", errors);

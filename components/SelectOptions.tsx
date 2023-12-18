@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import Select from 'react-select';
+import Select, { DropdownIndicatorProps, components } from 'react-select';
 import Loader from './Loader';
 import ButtonCN from './ButtonCN';
-import { CaretDown } from '@phosphor-icons/react';
+import { CaretDown, Check, SpinnerGap } from '@phosphor-icons/react';
 
 type ComboBoxProps = {
     errors: any,
@@ -23,8 +23,8 @@ type ComboBoxProps = {
     field: any,
 }
 type OnChangeData = {
-    label:string,
-    value:string
+    label: string,
+    value: string
 }
 
 const SelectOptions = ({ name, field, id, label, data, defaultValue, setValue, setId, getValues, fetching, isSuccess, errors, register, query, setQuery, filteredData }: ComboBoxProps) => {
@@ -52,23 +52,35 @@ const SelectOptions = ({ name, field, id, label, data, defaultValue, setValue, s
         setId(data.value);
     }
     // console.log(getValues(name));
+    const DropdownIndicator: React.FC<DropdownIndicatorProps> = props => {
+        return (
+            <components.DropdownIndicator {...props}>
+                {
+                    fetching ?
+                        <SpinnerGap className='inline-block animate-spin rounded-full  motion-reduce:animate-[spin_1.5s_linear_infinite]' size={20} color="black" />
+                        :
+                        <CaretDown size={20} />
+                }
+            </components.DropdownIndicator>
+        );
+    };
 
     return (
         <div className="w-full">
             <Select
                 {...field}
+                components={{ DropdownIndicator }}
                 styles={customStyles}
                 className="basic-single"
                 options={options ? options : []}
-                // defaultValue={options ? options[0] : ''}
+                defaultValue={options ? options[0] : ''}
                 placeholder='Select'
                 isSearchable
-                isLoading={fetching}
                 // menuIsOpen
                 classNamePrefix="react-select"
                 onChange={handleChange}
-                // value={getValues(name) ?? null}
-                
+            // value={getValues(name) ?? null}
+
             />
             {errors[name] ? <p className='text-red-600 text-sm'>{errors[name].message}</p> : ''}
         </div>
