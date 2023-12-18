@@ -3,20 +3,34 @@ import { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import ButtonCN from '@/components/ButtonCN'
 import { ChargerInformation, ChargerType } from '@/utils/types'
 import { getChargerModel, getManufucturer } from '@/utils/manufucturer-api'
 import ManuComboBox from '@/components/manuComboBox';
+import SelectOptions from '@/components/SelectOptions';
+import { fieldRequired } from '@/globalVariables';
+
+type FieldType = "manufacturer" | "model" | "manufacturer.value" | "manufacturer.label" | "model.value" | "model.label"
 
 
 const chargerSchema = z.object({
-    manufacturer: z.string().min(1, { message: "Manufucturer is required" }),
-    model: z.string().min(1, { message: "Model is required" }),
-    manufacturerId: z.string(),
-    modelId: z.string()
+    // manufacturer: z.string().min(1, { message: fieldRequired }),
+    // model: z.string().min(1, { message: fieldRequired }),
+    manufacturer: z.string({ required_error: fieldRequired }).min(1, { message: "Manufucturer is required" })
+        .or(z.object({
+            value: z.string(),
+            label: z.string()
+        })),
+    model: z.string({ required_error: fieldRequired }).min(1, { message: "Model is required" })
+        .or(z.object({
+            value: z.string(),
+            label: z.string()
+        })),
+    // manufacturerId: z.string(),
+    // chargerModel: z.string()
 })
 
 
@@ -29,7 +43,7 @@ export default function Example() {
     const [manuQuery, setManuQuery] = useState('');
     const [initialDataFetched, setInitialDataFetched] = useState(false);
 
-    const { register, setValue, getValues, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
+    const { register, control, setValue, getValues, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
         resolver: zodResolver(chargerSchema)
     })
 
@@ -47,10 +61,11 @@ export default function Example() {
 
     const manufacturerQuery = useQuery({ queryKey: ['manufacturer'], queryFn: getManufucturer })
     const modelQueryData = useQuery({ queryKey: [manufacturerId], queryFn: () => getChargerModel(manufacturerId), enabled: !!manufacturerId });
+    // console.log("values", getValues('manufacturer2'))
 
     useEffect(() => {
         if (initialDataFetched) {
-            setValue('model', '');
+            setValue('model', { label: '', value: '' });
         }
         if (modelQueryData.isSuccess && !initialDataFetched) {
             setInitialDataFetched(true);
@@ -71,20 +86,27 @@ export default function Example() {
 
     const filteredManufucture = manuQuery === '' ? data : (data)?.filter((data: any) => data.name.toLowerCase().replace(/\s+/g, '').includes(manuQuery.toLowerCase().replace(/\s+/g, '')))
 
-    let filteredModel;
+    let filteredModel: any;
 
     if (modelQueryData.isSuccess) {
         filteredModel = modelQuery === '' ? modelQueryData?.data.data : modelQueryData?.data.data.filter((data: any) => data.name.toLowerCase().replace(/\s+/g, '').includes(modelQuery.toLowerCase().replace(/\s+/g, '')))
     }
     const handleForm = (data: ChargerInformation) => {
-        console.log(data);
+        // console.log("formSubmitdata", data);
+        // console.log(getValues('manufacturer2'))
+        const formData = {
+            'manufacturerId': data.manufacturer.value,
+            'chargerModel': data.model.value
+        }
+        console.log("formData", formData);
     }
 
+    // console.log("errors", errors);
     return (
         <div className='container mx-auto mt-10'>
             <h1 className='text-xl font-semibold'>Primary Information</h1>
             <form onSubmit={handleSubmit(handleForm)} className="">
-                <div className='flex gap-10'>
+                {/* <div className='grid grid-cols-2 gap-10'>
                     <ManuComboBox
                         name="manufacturer"
                         id="manufacturerId"
@@ -120,6 +142,57 @@ export default function Example() {
                         getValues={getValues}
                         setId={setModelId}
 
+                    />
+                </div> */}
+                <div className='grid grid-cols-2 gap-10 mt-5'>
+                    <Controller
+                        name="manufacturer"
+                        control={control}
+                        render={({ field }) => (
+                            <SelectOptions
+                                field={field}
+                                name="manufacturer"
+                                id="manufacturerId2"
+                                label="Charger Manufacturer"
+                                defaultValue={manufacturerQuery?.data?.data?.manufacturer}
+                                data={data}
+                                query={manuQuery}
+                                setQuery={setManuQuery}
+                                register={register}
+                                errors={errors}
+                                filteredData={filteredManufucture}
+                                fetching={isFetching}
+                                isSuccess={isSuccess}
+                                setValue={setValue}
+                                getValues={getValues}
+                                setId={setManufacturerId}
+                            />
+                        )}
+                    />
+                    <Controller
+                        name="model"
+                        control={control}
+                        render={({ field }) => (
+                            <SelectOptions
+                                field={field}
+                                name="model"
+                                id="modelId2"
+                                label="Charger Model Name"
+                                defaultValue={!initialDataFetched ? modelQueryData?.data?.data[0] : ''}
+                                data={modelQueryData?.data?.data}
+                                query={modelQuery}
+                                setQuery={setModelQuery}
+                                register={register}
+                                errors={errors}
+                                filteredData={filteredModel}
+                                fetching={modelQueryData.isFetching}
+                                isSuccess={modelQueryData.isSuccess}
+                                setValue={setValue}
+                                getValues={getValues}
+                                setId={setModelId}
+
+                            />
+                        )}
                     />
                 </div>
                 <ButtonCN className="bg-teal-600 mt-5">Submit</ButtonCN>

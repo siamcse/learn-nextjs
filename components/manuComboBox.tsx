@@ -33,8 +33,6 @@ const ManuComboBox = ({ name, id, label, data, defaultValue, setValue, setId, ge
         }
     }, [isSuccess, defaultValue])
 
-    console.log(getValues());
-
     useEffect(() => {
         if (selected) {
             setValue(name, selected?.name);

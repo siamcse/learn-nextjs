@@ -169,7 +169,7 @@ export type ChargerType = {
     __v: number
 }
 
-export type ModelType =  {
+export type ModelType = {
     _id: string
     name: string
     modelCode?: string
@@ -194,8 +194,14 @@ export type ModelType =  {
 
 
 export type ChargerInformation = {
-    model:string,
-    manufacturer:string,
-    manufacturerId:string,
-    modelId:string,
+    model: {
+        label: string,
+        value: string
+    },
+    manufacturer: {
+        label: string,
+        value: string
+    },
+    // manufacturerId: string,
+    // modelId: string,
 }

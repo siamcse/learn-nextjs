@@ -7,64 +7,34 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import ButtonCN from '@/components/ButtonCN'
-import { ChargerInformation, ChargerType, ModelType } from '@/utils/types'
+import { ChargerInformation, ChargerType } from '@/utils/types'
 import { getChargerModel, getManufucturer } from '@/utils/manufucturer-api'
-import EditComboBox from '@/components/EditCombobox';
+import ManuComboBox from '@/components/manuComboBox';
+import SelectOptions from '@/components/SelectOptions';
 
-//Changeable file
 
 const chargerSchema = z.object({
-    model: z.string({ required_error: "Model is required", invalid_type_error: "Model must be string" }).min(1, { message: "Model is required" }).min(1, { message: "Model is required" })
-        .or(z.object({
-            _id: z.string(),
-            name: z.string(),
-            modelCode: z.string(),
-            input: z.string(),
-            output: z.string(),
-            communicationType: z.string(),
-            isMeterVIChangeable: z.string(),
-            features: z.string(),
-            connectivity: z.string(),
-            mount: z.string(),
-            manufacturerId: z.string(),
-            clientId: z.string(),
-            maxPower: z.string(),
-            status: z.string(),
-            created_at: z.string(),
-            updated_at: z.string(),
-            __v: z.number(),
-            triggerType: z.string(),
-            TriggerType: z.string(),
-            maxPowerType: z.string(),
-        })),
-    manufacturer: z.string({ required_error: "Model is required", invalid_type_error: "Manufacturer must be string" }).min(1, { message: "Manufacturer is required" }).min(1, { message: "Manufucturer is required" })
-        .or(z.object({
-            _id: z.string(),
-            name: z.string(),
-            clientId: z.string(),
-            chargerId: z.string(),
-            address: z.string(),
-            description: z.string(),
-            contact: z.string(),
-            status: z.string(),
-            created_at: z.string(),
-            updated_at: z.string(),
-            __v: z.number()
-        })),
+    manufacturer: z.string().min(1, { message: "Manufucturer is required" }),
+    model: z.string().min(1, { message: "Model is required" }),
+    // manufacturerId: z.string(),
+    // modelId: z.string()
 })
 
 
 export default function Example() {
     const token = Cookies.get('token');
+    const [manufacturerId, setManufacturerId] = useState('');
+    const [modelId, setModelId] = useState('');
+
+    const [modelQuery, setModelQuery] = useState('');
+    const [manuQuery, setManuQuery] = useState('');
     const [initialDataFetched, setInitialDataFetched] = useState(false);
+
     const { register, setValue, getValues, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
         resolver: zodResolver(chargerSchema)
     })
 
-    const [modelQuery, setModelQuery] = useState('');
-    const [manuQuery, setManuQuery] = useState('');
-
-    const { data, isFetching } = useQuery({
+    const { data, isSuccess, isFetching } = useQuery({
         queryKey: ['token'],
         queryFn: async () => {
             const res = await axios.get(`http://192.168.0.186:3004/manufacturer`, {
@@ -77,27 +47,30 @@ export default function Example() {
     })
 
     const manufacturerQuery = useQuery({ queryKey: ['manufacturer'], queryFn: getManufucturer })
-    const modelQueryData = useQuery({ queryKey: [getValues('manufacturer')], queryFn: () => getChargerModel(getValues('manufacturer')?._id), enabled: !!getValues('manufacturer')?._id });
-
-    useEffect(() => {
-        if (manufacturerQuery.isSuccess) {
-            setValue('manufacturer', manufacturerQuery.data.data.manufacturer, { shouldValidate: true })
-        }
-    }, [manufacturerQuery.isSuccess])
+    const modelQueryData = useQuery({ queryKey: [manufacturerId], queryFn: () => getChargerModel(manufacturerId), enabled: !!manufacturerId });
 
     useEffect(() => {
         if (initialDataFetched) {
-            // setValue('model', '');
             setValue('model', '');
         }
         if (modelQueryData.isSuccess && !initialDataFetched) {
-            setValue('model', modelQueryData.data.data[0], { shouldValidate: true });
             setInitialDataFetched(true);
         }
+    }, [modelQueryData.isSuccess, manufacturerId])
 
-    }, [modelQueryData.isSuccess, getValues('manufacturer')])
+    useEffect(() => {
+        const fieldIds = {
+            "manufacturerId": manufacturerId,
+            "modelId": modelId
+        }
+        Object.entries(fieldIds).forEach(([fieldName, value]: any) => {
+            setValue(fieldName, value);
+        })
+    }, [manufacturerId, modelId])
 
-    const filteredManufucture = manuQuery === '' ? data : (data)?.filter((person: any) => person.name.toLowerCase().replace(/\s+/g, '').includes(manuQuery.toLowerCase().replace(/\s+/g, '')))
+
+
+    const filteredManufucture = manuQuery === '' ? data : (data)?.filter((data: any) => data.name.toLowerCase().replace(/\s+/g, '').includes(manuQuery.toLowerCase().replace(/\s+/g, '')))
 
     let filteredModel;
 
@@ -112,31 +85,40 @@ export default function Example() {
         <div className='container mx-auto mt-10'>
             <h1 className='text-xl font-semibold'>Primary Information</h1>
             <form onSubmit={handleSubmit(handleForm)} className="">
-                <div className='flex gap-10'>
-                    <EditComboBox
+                <div className='flex gap-10 mt-5'>
+                    <SelectOptions
                         name="manufacturer"
+                        id="manufacturerId"
                         label="Charger Manufacturer"
+                        defaultValue={manufacturerQuery?.data?.data?.manufacturer}
+                        data={data}
                         query={manuQuery}
                         setQuery={setManuQuery}
                         register={register}
                         errors={errors}
                         filteredData={filteredManufucture}
                         fetching={isFetching}
+                        isSuccess={isSuccess}
                         setValue={setValue}
                         getValues={getValues}
-
+                        setId={setManufacturerId}
                     />
-                    <EditComboBox
+                    <SelectOptions
                         name="model"
+                        id="modelId"
                         label="Charger Model Name"
+                        defaultValue={!initialDataFetched ? modelQueryData?.data?.data[0] : ''}
+                        data={modelQueryData?.data?.data}
                         query={modelQuery}
                         setQuery={setModelQuery}
                         register={register}
                         errors={errors}
                         filteredData={filteredModel}
                         fetching={modelQueryData.isFetching}
+                        isSuccess={modelQueryData.isSuccess}
                         setValue={setValue}
                         getValues={getValues}
+                        setId={setModelId}
 
                     />
                 </div>

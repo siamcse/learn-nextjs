@@ -1,0 +1,25 @@
+.react-select__option--is-selected{
+    background-color: green !important;
+    background-image: url("/images/check.svg");
+    background-repeat: no-repeat;
+    background-position: right;
+    background-origin: content-box;
+    background-size: 20px;
+
+}
+.react-select__control{
+    border: 1px solid gray !important;
+}
+.react-select__control--is-focused{
+    border: 1px solid gray !important;
+    box-shadow: none !important;
+    outline: none !important;
+
+}
+.react-select__option--is-focused{
+    background-color: rgba(0, 255, 0, 0.5) !important;
+    
+}
+.react-select__indicator-separator{
+    width: 0px !important;
+}

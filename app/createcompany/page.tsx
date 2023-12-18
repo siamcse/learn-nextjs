@@ -48,7 +48,7 @@ const CreateCompanyPage = () => {
     const router = useRouter();
     const [zipId, setZipId] = useState<number>();
 
-    if(!token){
+    if (!token) {
         redirect('/login');
     }
 
@@ -66,7 +66,7 @@ const CreateCompanyPage = () => {
         }
     })
 
-    const { data,status } = useQuery({
+    const { data, status } = useQuery({
         queryKey: [zipId],
         queryFn: () => {
             if (zipId) {
@@ -112,7 +112,7 @@ const CreateCompanyPage = () => {
 
     }
 
-    const handleZipField = (e:any) => {
+    const handleZipField = (e: any) => {
         e.preventDefault();
         const value = e.target.value;
         setZipId(value);

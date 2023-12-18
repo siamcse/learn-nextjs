@@ -57,7 +57,7 @@ export default function Example() {
             setInitialDataFetched(true);
         }
 
-    }, [modelQueryData.isSuccess,manufacturer])
+    }, [modelQueryData.isSuccess, manufacturer])
 
     const { register, setValue, handleSubmit, formState: { errors } } = useForm<ChargerInformation>({
         resolver: zodResolver(chargerSchema)

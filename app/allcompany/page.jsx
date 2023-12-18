@@ -7,7 +7,7 @@ import { SpinnerGap, CaretLeft, CaretRight } from '@phosphor-icons/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import ButtonCN from '@/components/ButtonCN';
-import {PencilSimple} from '@phosphor-icons/react';
+import { PencilSimple } from '@phosphor-icons/react';
 import Loader from '@/components/Loader'
 
 const AllCompanyPage = () => {
@@ -44,8 +44,8 @@ const AllCompanyPage = () => {
             setPage(1);
             router.push(`/allcompany?page=1&size=10&query=${searchValue}`);
         }
-            
-        
+
+
     }, [page, getSize, data?.count, searchValue])
 
     const handleSearch = (e) => {
@@ -55,12 +55,12 @@ const AllCompanyPage = () => {
         setSearchValue(value ?? '');
         router.push(`/allcompany?page=${page}&size=${getSize}&query=${value}`);
     }
-    
+
     if (isFetching) {
         return <Loader></Loader>
     }
 
-    const handleEdit = (id)=>{
+    const handleEdit = (id) => {
         router.push(`/editcompany/${id}`);
     }
     return (
@@ -86,7 +86,7 @@ const AllCompanyPage = () => {
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>{company.name}</td>
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>{company.email}</td>
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>{company.phone}</td>
-                            <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'><ButtonCN onClick={()=>handleEdit(company._id)} className='bg-teal-700'><PencilSimple size={20} /></ButtonCN></td>
+                            <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'><ButtonCN onClick={() => handleEdit(company._id)} className='bg-teal-700'><PencilSimple size={20} /></ButtonCN></td>
                             <td className='px-5 py-5 border-b border-gray-200 bg-white text-sm'>Details</td>
                         </tr>)
                     }
