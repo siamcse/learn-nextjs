@@ -12,7 +12,6 @@ const MarketPlacePage = () => {
     const token = Cookies.get('token');
     const [query, setQuery] = useState('');
     const [activeBtn, setActiveBtn] = useState('')
-    console.log("🚀 ~ file: page.tsx:12 ~ MarketPlacePage ~ query:", query)
 
     const { data: types, isFetching: typesFetching } = useQuery({
         queryKey: ['token'],
@@ -37,7 +36,7 @@ const MarketPlacePage = () => {
             return res.data;
         }
     })
-    console.log("data", data);
+
     if (typesFetching) {
         return <Loader size={32} />
     }
@@ -73,7 +72,7 @@ const MarketPlacePage = () => {
                         </div>
                         <hr />
                         <div className='p-5'>
-                            <ButtonCN className="bg-teal-700 w-full px-4">Details</ButtonCN>
+                            <Link href={`/integration-marketplace/${item._id}`}><ButtonCN className="bg-teal-700 w-full px-4">Details</ButtonCN></Link>
                         </div>
                     </div>)
                 }

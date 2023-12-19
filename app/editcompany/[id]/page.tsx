@@ -27,18 +27,18 @@ type DataTypes = {
     }
 }
 
-const EditCompany = ({ params }: { params: { id: string } }) => {
-    const companySchema = z.object({
-        name: z.string().min(1, { message: "Name is required" }),
-        email: z.string().email(),
-        phone: z.string().includes("+"),
-        address: z.string().min(1, { message: "Address is required" }),
-        state: z.string().min(1, { message: "State is required" }),
-        zip: z.string().min(5, { message: "Zip must be 5 digits" }),
-        city: z.string().min(1, { message: "City is required" }),
-        country: z.string().min(1, { message: "Country is required" })
+const companySchema = z.object({
+    name: z.string().min(1, { message: "Name is required" }),
+    email: z.string().email(),
+    phone: z.string().includes("+"),
+    address: z.string().min(1, { message: "Address is required" }),
+    state: z.string().min(1, { message: "State is required" }),
+    zip: z.string().min(5, { message: "Zip must be 5 digits" }),
+    city: z.string().min(1, { message: "City is required" }),
+    country: z.string().min(1, { message: "Country is required" })
 
-    })
+})
+const EditCompany = ({ params }: { params: { id: string } }) => {
     const token = Cookies.get('token');
     const id = params.id;
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<DataTypes>({
