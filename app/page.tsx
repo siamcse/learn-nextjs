@@ -24,6 +24,15 @@ export default function Home() {
       <Link href={'/createcompany'}>
         <ButtonCN className='mt-2 bg-teal-600 hover:bg-teal-700'>Create Company</ButtonCN>
       </Link>
+      <Link href={'/chargerfee'}>
+        <ButtonCN className='mt-2 bg-teal-600 hover:bg-teal-700'>Charger Fee</ButtonCN>
+      </Link>
+      <Link href={'/manufac'}>
+        <ButtonCN className='mt-2 bg-teal-600 hover:bg-teal-700'>Manufacturer</ButtonCN>
+      </Link>
+      <Link href={'/integration-marketplace'}>
+        <ButtonCN className='mt-2 bg-teal-600 hover:bg-teal-700'>Integration Marketplace</ButtonCN>
+      </Link>
     </main>
   )
 }
