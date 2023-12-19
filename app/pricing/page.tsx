@@ -1,20 +1,22 @@
 'use client'
 import { pricing } from '@/utils/pricing';
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import ChargerList from './_components/ChargerList';
 
 const PricingPage = () => {
     const token = Cookies.get('token');
     const router = useRouter();
-    
-    useEffect(()=>{
-        if(!token){
+
+    useEffect(() => {
+        if (!token) {
             router.push('/login');
         }
-    },[token])
+    }, [token])
+
     return (
-        <div className='container mx-auto mt-4 p-2'>
+        <div className='px-4 mt-4 p-2'>
             <h1 className='text-2xl font-bold'>Pricing</h1>
             {
                 pricing.pricings.map(data => <div key={data._id} className="w-full border rounded-t-lg">
@@ -30,14 +32,7 @@ const PricingPage = () => {
                             </div>
                             <div>
                                 <p className='font-semibold opacity-50'>Chargers</p>
-                                {
-                                    location.chargers.map(charger => <button
-                                        key={charger._id}
-                                        className='mr-2 mt-1 text-sm border px-2 bg-gray-100 rounded-lg'
-                                    >
-                                        {charger.name}
-                                    </button>)
-                                }
+                                <ChargerList chargers={location.chargers} />
                             </div>
                         </div>)
                     }

@@ -48,7 +48,7 @@ const SelectOptions = ({ name, field, id, label, data, defaultValue, setValue, s
         })
     };
     const handleChange = (data: OnChangeData) => {
-        setValue(name, data);
+        setValue(name, data, { shouldValidate: true });
         setId(data.value);
     }
     // console.log(getValues(name));

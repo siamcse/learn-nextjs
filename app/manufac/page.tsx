@@ -21,16 +21,14 @@ type UpdatedDataType = {
 const chargerSchema = z.object({
     // manufacturer: z.string().min(1, { message: fieldRequired }),
     // model: z.string().min(1, { message: fieldRequired }),
-    manufacturer: z.string({ required_error: fieldRequired }).min(1, { message: "Manufucturer is required" })
-        .or(z.object({
-            value: z.string(),
-            label: z.string()
-        })),
-    model: z.string({ required_error: fieldRequired }).min(1, { message: "Model is required" })
-        .or(z.object({
-            value: z.string(),
-            label: z.string()
-        })),
+    manufacturer: z.object({
+        value: z.string(),
+        label: z.string()
+    }, { required_error: fieldRequired }),
+    model: z.object({
+        value: z.string(),
+        label: z.string()
+    }, { required_error: fieldRequired }),
     // manufacturerId: z.string(),
     // chargerModel: z.string()
 })
@@ -105,7 +103,7 @@ export default function Example() {
         console.log('formData: ', updatedData);
     }
 
-    // console.log("errors", errors);
+    console.log("errors", errors);
     return (
         <div className='container mx-auto mt-10'>
             <h1 className='text-xl font-semibold'>Primary Information</h1>
