@@ -8,7 +8,7 @@ import Loader from '@/components/Loader';
 import ButtonCN from '@/components/ButtonCN';
 import { Link } from '@phosphor-icons/react';
 import InputField from '@/components/InputField';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { fieldRequired } from '@/globalVariables';
 import { create } from 'domain';
@@ -37,21 +37,13 @@ type InputFieldType = {
     type: string
 }
 
-const createSchema = (inputFields: InputFieldType[]) => {
-    const schemaObject: any = {};
-    inputFields?.forEach((field) => {
-        schemaObject[field.key] = z.string({ required_error: fieldRequired }).min(1, { message: fieldRequired })
-    })
-    return schemaObject;
-}
-
 
 const MarketPlaceDetails = ({ params }: { params: { id: string } }) => {
     const token = Cookies.get('token');
     const id = params.id;
     const [btnText, setBtnText] = useState('Connect');
 
-    const { data, isFetching } = useQuery({
+    const { data, isFetching, isSuccess } = useQuery({
         queryKey: ['token', id],
         queryFn: async () => {
             const res = await axios.get(`http://192.168.0.186:3004/integration-marketplace/${id}`, {
@@ -62,10 +54,22 @@ const MarketPlaceDetails = ({ params }: { params: { id: string } }) => {
             return res.data as MarketPlaceType;
         }
     })
-    const dynamicZodSchema = createSchema(data?.inputFields);
 
-    const { register, handleSubmit, getValues, formState: { errors } } = useForm<any>({
-        resolver: zodResolver(createSchema(data?.inputFields))
+    const schema = isSuccess ?
+        z.object(
+            data?.inputFields.reduce((acc, field) => {
+                return {
+                    ...acc,
+                    [field.key]: z.string({ required_error: fieldRequired }).min(1, { message: fieldRequired }),
+                };
+            }, {} as Record<string, z.ZodString>)
+        )
+        : z.object({} as Record<string, z.ZodString>);
+
+    type SchemaType = z.infer<typeof schema>;
+
+    const { register, control, handleSubmit, setValue, getValues, formState: { errors } } = useForm<SchemaType>({
+        resolver: zodResolver(schema)
     });
 
     const formSubmit = (data: any) => {
@@ -76,8 +80,6 @@ const MarketPlaceDetails = ({ params }: { params: { id: string } }) => {
     if (isFetching) {
         return <Loader size={32} />
     }
-    console.log("errors", errors);
-    console.log("values", getValues());
 
     return (
         <form onSubmit={handleSubmit(formSubmit)} className='container mx-auto my-10'>
@@ -100,32 +102,49 @@ const MarketPlaceDetails = ({ params }: { params: { id: string } }) => {
                         <span className='capitalize'> {data?.name}</span>
                     </p>
                 </div>
-                <ButtonCN
+                {/* <ButtonCN
                     type={btnText === 'Verify' ? "submit" : "button"}
                     onClick={() => setBtnText('Verify')}
                     className="bg-teal-700 flex gap-2 items-center"
                 >
                     {btnText}
                     <Link size={20} color="#faebeb" />
-                </ButtonCN>
+                </ButtonCN> */}
+                {btnText !== "Verify" ?
+                    <ButtonCN
+                        className="flex gap-2 items-center"
+                        type='button'
+                        onClick={() => setBtnText('Verify')}
+                    >
+                        Connect
+                        <Link size={20} color="#faebeb" />
+                    </ButtonCN> : null}
+                {btnText === "Verify" ?
+                    <ButtonCN
+                        type='submit'
+                        className="flex gap-2 items-center"
+                    >
+                        Verify
+                        <Link size={20} color="#faebeb" />
+                    </ButtonCN> : null}
             </div>
             <div className=' my-10'>
                 {
                     btnText === 'Verify' ?
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 border p-5 rounded'>
                             {
-                                data?.inputFields.map(field => <div
-                                    key={field.key}
+                                data?.inputFields.map(value => <div
+                                    key={value.key}
                                     className='my-2 flex flex-col'
                                 >
                                     <InputField
                                         className=''
                                         errors={errors}
-                                        label={field.name}
-                                        name={field.key}
+                                        label={value.name}
+                                        name={value.key}
                                         register={register}
-                                        type={field.type}
-
+                                        type={value.type}
+                                        handleZipField={(e: any) => setValue(value.key, e.target.value, { shouldValidate: true })}
                                     />
                                 </div>)
                             }

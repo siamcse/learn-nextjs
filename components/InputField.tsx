@@ -23,7 +23,7 @@ const InputField = ({ className, register, name, label, type, errors, handleZipF
                 placeholder={label}
                 onChange={handleZipField}
             />
-            {/* {errors[name] ? <span className='text-red-500 text-sm'>{errors[name].message}</span> : ''} */}
+            {errors[name] ? <span className='text-red-500 text-sm'>{errors[name].message}</span> : ''}
         </>
     );
 }
