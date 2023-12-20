@@ -13,6 +13,8 @@ import { z } from 'zod';
 import { fieldRequired } from '@/globalVariables';
 import { create } from 'domain';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 type MarketPlaceType = {
     _id: string
@@ -42,6 +44,8 @@ const MarketPlaceDetails = ({ params }: { params: { id: string } }) => {
     const token = Cookies.get('token');
     const id = params.id;
     const [btnText, setBtnText] = useState('Connect');
+    const { user } = useSelector((state: RootState) => state.user);
+    console.log("🚀 ~ file: page.tsx:48 ~ MarketPlaceDetails ~ user:", user)
 
     const { data, isFetching, isSuccess } = useQuery({
         queryKey: ['token', id],

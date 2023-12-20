@@ -11,6 +11,8 @@ import { ZodType, z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '@/redux/features/user/userSlice';
 
 type SignInData = {
     email: string,
@@ -22,6 +24,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const authUsername = "650307ae3b81447e5d793425";
     const authPassword = "ff427eeb-f60a-46c0-995e-7f1daa355eb8";
@@ -59,6 +62,8 @@ const LoginPage = () => {
             onSuccess: (data) => {
                 toast.success("Sign In Successfull.");
                 Cookies.set('token', data.data.auth.accessToken);
+                console.log("user", data.data);
+                dispatch(loginSuccess({ user: data.data }))
                 setLoading(false);
                 router.push('/');
             },
@@ -73,7 +78,6 @@ const LoginPage = () => {
     }
 
     const token = Cookies.get('token');
-    console.log(token);
     const handleForgotPassword = () => {
         setShowModal(true);
 
