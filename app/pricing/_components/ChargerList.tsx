@@ -16,11 +16,13 @@ const ChargerList = ({ chargers }: any) => {
     };
 
     useEffect(() => {
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [window.innerWidth]);
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', handleResize);
+            return () => {
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+    }, []);
 
     useLayoutEffect(() => {
         const rows = currentRef.current?.children;
@@ -38,7 +40,7 @@ const ChargerList = ({ chargers }: any) => {
             }
             setNumberOfItemsDisplayed(numItems);
         }
-    }, [totalWidth, window.innerWidth]);
+    }, [totalWidth]);
     return (
         <div className='mt-1 flex justify-between items-center gap-1'>
             <div ref={currentRef} className='flex flex-wrap gap-1 h-[25px] overflow-hidden'>
