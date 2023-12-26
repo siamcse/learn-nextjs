@@ -67,6 +67,7 @@ const SelectOptions = ({ name, field, id, label, data, defaultValue, setValue, s
 
     return (
         <div className="w-full">
+            <label htmlFor="">{label}</label>
             <Select
                 {...field}
                 components={{ DropdownIndicator }}

@@ -31,12 +31,12 @@ const Pagination = (props: any) => {
 
     const onNext = () => {
         onPageChange(currentPage + 1);
-        router.push(`/allcompany?page=${currentPage + 1}&size=${pageSize}&query=${getQuery}`);
+        router.push(`/companies?page=${currentPage + 1}&size=${pageSize}&query=${getQuery}`);
     };
 
     const onPrevious = () => {
         onPageChange(currentPage - 1);
-        router.push(`/allcompany?page=${currentPage - 1}&size=${pageSize}&query=${getQuery}`);
+        router.push(`/companies?page=${currentPage - 1}&size=${pageSize}&query=${getQuery}`);
     };
     console.log("🚀 ~ file: Pagination.tsx:35 ~ onPrevious ~ currentPage:", currentPage)
 
@@ -60,7 +60,7 @@ const Pagination = (props: any) => {
                         className={`${pageNumber === currentPage ? "bg-teal-700 rounded-sm text-white" : "font-semibold"} cursor-pointer ${btnClass}`}
                         onClick={() => {
                             onPageChange(pageNumber)
-                            router.push(`/allcompany?page=${pageNumber}&size=${pageSize}&query=${getQuery}`);
+                            router.push(`/companies?page=${pageNumber}&size=${pageSize}&query=${getQuery}`);
                         }}
                     >
                         {pageNumber}
